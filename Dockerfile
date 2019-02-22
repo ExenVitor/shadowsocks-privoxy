@@ -1,17 +1,25 @@
 FROM alpine:latest
-MAINTAINER bluebu <bluebuwang@gmail.com>
+LABEL maintainer="exen3995@gmail.com"
+
+#------------------------------------------------------------------------------
+# Install packages:
+#------------------------------------------------------------------------------
+
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories
+
+RUN \
+  apk --update --upgrade add \
+      python3-dev \
+      privoxy \
+      git \
+      libsodium \
+  && rm /var/cache/apk/* \
+  && pip3 install git+https://github.com/shadowsocks/shadowsocks.git@master \
+  && apk del git
 
 #------------------------------------------------------------------------------
 # Environment variables:
 #------------------------------------------------------------------------------
-
-RUN \
-  apk --update --upgrade add \
-      py-pip \
-      privoxy \
-  && rm /var/cache/apk/*
-
-RUN pip install shadowsocks
 
 ENV SERVER_ADDR= \
     SERVER_PORT=8899  \
